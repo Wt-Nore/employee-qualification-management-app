@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>社員一覧</title>
+</head>
+<body>
+
+<h1>社員一覧</h1>
+
+<!--
+th:each 一覧を回す
+th:text 表示する
+th:href 画面遷移
+
+画面構成
+社員一覧画面（list.html）
+├─ 検索フォーム
+│
+└─ 社員一覧
+    └─ 詳細リンク → detail.html
+-->
+
+<form th:action="@{/employees}" method="get">
+  <label>
+    <input type="text" name="keyword" th:value="${keyword}">
+  </label>
+  <button type="submit">検索</button>
+</form>
+
+<p th:if="${employees.isEmpty()}">
+  該当する社員はいませんでした
+</p>
+
+<ul th:if="${!employees.isEmpty()}">
+  <li th:each="employee : ${employees}">
+    <a th:href="@{/employees/{employeeNumber}(
+    employeeNumber=${employee.employeeNumber},
+    keyword=${keyword}
+    )}">
+      <span th:text="${employee.employeeNumber}"></span>
+      <span th:text="${employee.department ?:'未設定'}"></span>
+      <span th:text="${employee.grade}"></span>
+      <span th:text="${employee.name}"></span>
+    </a>
+  </li>
+</ul>
+
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>資格一覧</title>
+</head>
+<body>
+
+<h1>資格一覧</h1>
+
+<ul>
+  <li th:each="q : ${qualifications}">
+    <a th:href="@{/employees/qualification/{id}(id=${q.qualificationId})}"
+    th:text="${q.qualificationName}">
+    </a>
+  </li>
+</ul>
+
+</body>
+</html>

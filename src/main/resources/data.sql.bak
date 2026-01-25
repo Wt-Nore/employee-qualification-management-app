@@ -1,0 +1,13 @@
+INSERT INTO qualification (qualification_id, qualification_name)
+VALUES
+('Q001', '基本情報技術者'),
+('Q002', '応用情報技術者'),
+('Q003', 'ITパスポート');
+
+
+INSERT INTO employee (employee_number, name, department, grade)
+VALUES
+('ya001', '山田太郎', '工事部','主任'),
+('sa001', '佐藤桂子', '営業部', '係長'),
+('su001', '鈴木一郎', '工事部', '係長'),
+('ya002', '山田二郎', '工事部','課員');

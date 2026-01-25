@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>社員詳細</title>
+</head>
+<body>
+
+<h1>社員詳細</h1>
+
+<p>社員番号：<span th:text="${employee.employeeNumber}"></span></p>
+
+<p>所属部署：<span th:text="${employee.department ?:'未設定'}"></span></p>
+
+<p>等級：<span th:text="${employee.grade}"></span></p>
+
+<p>氏名：<span th:text="${employee.name}"></span></p>
+
+<!-- 社員一覧に戻るリンク
+ keyword がある場合は、URLに保持する -->
+<a th:href="@{/employees(keyword=${keyword})}">社員一覧に戻る</a>
+
+<hr>
+
+<h2>資格一覧</h2>
+<!--
+資格を持っていない場合、「資格はありません」と表示
+かつ、null回避をする
+-->
+  <ul>
+    <li th:if="${#lists.isEmpty(employee.qualifications)}">
+      資格はありません
+    </li>
+  </ul>
+
+<!-- 資格がある場合、社員が保有している資格一覧を表示 -->
+<ul th:unless="${#lists.isEmpty(employee.qualifications)}">
+  <li th:each="q : ${employee.qualifications}">
+    <span th:text="${q.qualificationName}"></span>
+  </li>
+</ul>
+
+</body>
+</html>
