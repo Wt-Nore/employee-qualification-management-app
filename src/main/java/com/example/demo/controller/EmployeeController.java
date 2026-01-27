@@ -13,7 +13,6 @@ import com.example.demo.entity.Employee;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 @Controller
 
 public class EmployeeController {
@@ -32,25 +31,6 @@ public class EmployeeController {
   public EmployeeController (EmployeeService employeeService) {
     this.employeeService = employeeService;
   }
-
-
-  /**
-   * showEmployeesList...社員一覧を表示するメソッド
-   * URL /employees を追加する
-   *
-  // @GetMapping("/employees")
-  // public String showEmployeesList(@RequestParam(required = false) String keyword, Model model){
-
-    System.out.println("keyword = " + keyword);
-
-  //  List<Employee> employees = employeeService.getAllEmployees();
-  //  model.addAttribute("employees", employees);
-    // 社員一覧を画面に渡す
-
-    return "employee-list";
-    // 社員一覧画面を表示する
-  }
-  */
 
   /**
    * showEmployees...社員全件を表示する。
@@ -78,37 +58,6 @@ public class EmployeeController {
     // @return html "employee-list" 社員一覧画面を返す
     return "employee-list";
   }
-
-
-
-
-  //！！　Serviceに社員一覧を作らせる getAllployeeService() メソッドを追加すること！！
-
-  /**
-      @PathVariable String employeeNumber,
-      Model model
-  ) {
-    // employees...社員一覧画面を用意する
-    // showEmployeesList...社員一覧を表示する処理メソッド
-
-
-    List<Employee> employees = List.of(
-        new Employee("E001", "山田太郎"),
-        new Employee("E002", "佐藤桂子"),
-        new Employee("E003", "鈴木一郎")
-        // List<Employee>...社員一覧
-        // new とは、Employeeという社員情報の設計図を使って、今ここに社員を一人作ってください　という命令
-        // 現在はDBがないので、上記の様に仮の社員を手打ちしている　将来はDBからEmployeeを取得したい
-
-    );
-
-    // 社員一覧を画面に渡す
-    model.addAttribute("employees", employees);
-
-    // 社員一覧画面を表示する
-    return "employee-list";
-  }
-*/
 
   /**
    * 社員詳細画面を表示するメソッド
@@ -190,37 +139,7 @@ public class EmployeeController {
 
 
   }
-
-
-  /**
-   * 資格検索画面を表示するメソッド
-   */
-  @GetMapping("/employees/qualification/{qualificationId}")
-  public String showEmployeesByQualification(
-      @PathVariable String qualificationId,
-      Model model) {
-
-    List<Employee> employees =
-        employeeService.findEmployeesByQualificationId(qualificationId);
-
-    //　デバッグ用
-    System.out.println("employees size = " + employees.size());
-    if (employees.isEmpty()) {
-      System.out.println("該当社員は0人です");
-    } else {
-      System.out.println("該当社員は" + employees.size() + "人です");
-    }
-
-
-    // 画面表示用
-    if (employees.isEmpty()) {
-      model.addAttribute("message","該当者は見つかりませんでした");
-    }
-    model.addAttribute("qualificationId", qualificationId);
-    model.addAttribute("employees", employees);
-
-    return "employee-list";
-  }
+}
 
   /**
    * Javadocコメント　フォーマット
@@ -229,22 +148,3 @@ public class EmployeeController {
    * 詳細説明
    * 引数・戻り値　@param / @return で説明
    */
-
-  /**
-   * showQualifications...資格一覧画面を表示する。
-   * <p>URL /qualifications へのアクセスを受け取り、全ての資格情報を取得して、画面に渡す。</p>
-   * @param model 画面に資格一覧を渡すためのModelオブジェクト
-   * @return html "qualification-list" 資格一覧画面を返す
-   */
-  @GetMapping("/qualifications")
-  public String showQualificationList(Model model){
-    List<Qualification> qualifications = employeeService.getAllQualifications();
-    model.addAttribute("qualifications", qualifications);
-
-    return "qualification-list";
-  }
-
-}
-
-
-
