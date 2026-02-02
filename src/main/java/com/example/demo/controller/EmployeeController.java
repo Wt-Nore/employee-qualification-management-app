@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.Qualification;
+import com.example.demo.dto.EmployeeSearchCondition;
 import com.example.demo.service.EmployeeService;
 import java.util.List;
 import java.util.Optional;
@@ -40,18 +40,22 @@ public class EmployeeController {
    * @param model 画面に社員一覧と検索条件を渡すための Model
    * @return 社員一覧画面（employee-list）
    */
+
   @GetMapping("/employees") //リクエストがあったら keyword に応じた結果を、画面に社員一覧を渡すためのModelオブジェクト
   public String showEmployees(
       @RequestParam(required = false) String keyword,
       Model model) {
 
-    // if ... keyword の null / blank を整理
-    if (keyword != null && keyword.isBlank()) {
-      keyword = null;
-    }
+    EmployeeSearchCondition condition = new EmployeeSearchCondition();
+    condition.setKeyword(
+        (keyword != null && keyword.isBlank()) ? null : keyword
+    ); // keyword の null / blank を整理
 
     // URL に /employees , /keyword を追加する
-    List<Employee> employees = employeeService.search(keyword);
+
+    //List<Employee> employees = employeeService.searchByKeyword(keyword); //DTOを作る際に、.search に戻す
+    List<Employee> employees = employeeService.search(condition);
+
     model.addAttribute("employees", employees);
     model.addAttribute("keyword", keyword);
 
@@ -69,46 +73,11 @@ public class EmployeeController {
       Model model
   ) {
 
-    // 社員一覧を用意する
-    //List<Employee> employees = List.of(
-    //  new Employee("E001", "山田太郎"),
-    //  new Employee("E002", "佐藤桂子"),
-    //  new Employee("E003", "鈴木一郎")
-    //);
-
-    // まだ社員は見つかっていない状態
-    //  Employee foundEmployee = null;
-
-    // 社員一覧から該当社員を探す
-    // for (Employee employee : employees) {
-    //  if (employee.getEmployeeNumber().equals(employeeNumber)) {
-
-    //    foundEmployee = employee;
-
-    //    break; //見つかったらループ終了
-    //   }
-    // }
-
-    // 社員が見つからなかった場合
-    // if (foundEmployee == null) {
-    //   return "employee-not-found";
-    // }
-
-    // 見つかった場合、該当社員を画面に渡す
-    // model.addAttribute("employee", foundEmployee);
-    // 社員詳細画面を表示する Controller → HTMLの employee-detail に渡す
-    //return "employee-detail";
-    //  }
-    //}
-
     Optional<Employee> employeeOpt =
         employeeService.findEmployeeByEmployeeNumber(employeeNumber);
 
     if (employeeOpt.isPresent()) {
       Employee employee = employeeOpt.get();
-
-    //  System.out.println("employeeNumber = " + employee.getEmployeeNumber());
-    //  System.out.println("qualifications size = " + employee.getQualifications().size());
 
       System.out.println("employeeNumber = " + employee.getEmployeeNumber());
       System.out.println("qualifications size = " + employee.getQualifications().size());
@@ -121,23 +90,9 @@ public class EmployeeController {
 
     model.addAttribute("keyword", keyword); // 検索ワードを Model に渡す
 
-
-    /**
-    if (employeeOpt.isEmpty()) {
-      model.addAttribute("message", "該当社員は見つかりませんでした");
-      return "employee-not-found";
-    }
-
-    model.addAttribute("employee", employeeOpt.get());
-    model.addAttribute("keyword", keyword);
-
-     */
-
       return "employee-detail";
       // } else {
       //   return "employee-not-found";
-
-
   }
 }
 
