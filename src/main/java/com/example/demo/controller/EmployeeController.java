@@ -46,10 +46,10 @@ public class EmployeeController {
       @RequestParam(required = false) String keyword,
       Model model) {
 
-    EmployeeSearchCondition condition = new EmployeeSearchCondition();
-    condition.setKeyword(
-        (keyword != null && keyword.isBlank()) ? null : keyword
-    ); // keyword の null / blank を整理
+    EmployeeSearchCondition condition = employeeService.buildConditionFromKeyword(keyword);
+    //condition.setKeyword(
+    //    (keyword != null && keyword.isBlank()) ? null : keyword
+    //); // keyword の null / blank を整理
 
     // URL に /employees , /keyword を追加する
 

@@ -5,7 +5,14 @@ public class EmployeeSearchCondition {
   private String keyword;
   private String department;
   private String grade;
-  private String qualificationId;
+  private String qualificationName;
+
+  public boolean isEmpty() {
+    return keyword == null
+        && department == null
+        && grade == null
+        && qualificationName == null;
+  }
 
   // --- getter / setter ---
 
@@ -33,11 +40,11 @@ public class EmployeeSearchCondition {
     this.grade = grade;
   }
 
-  public String getQualificationId() {
-    return qualificationId;
+  public String getQualificationName() {
+    return qualificationName;
   }
 
-  public void setQualificationId(String qualificationId) {
-    this.qualificationId = qualificationId;
+  public void setQualificationName(String qualificationName) {
+    this.qualificationName = qualificationName;
   }
 }

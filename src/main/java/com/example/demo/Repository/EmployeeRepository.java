@@ -14,18 +14,41 @@ public interface EmployeeRepository
   // DISTINCT... ManyToMany JOIN で同じ社員が重複するのを防ぐため
   // LEFT JOIN... 資格を持っていない社員も検索対象に含めるため
   // OR... 入力欄で「どれかに一致すればヒット」させるため
+  // AND... 入力欄で「Condition + Condition」で
   @Query("""
       SELECT DISTINCT e
       FROM Employee e
       LEFT JOIN e.qualifications q
       WHERE
-      e.name LIKE %:keyword%
-      OR e.department LIKE %:keyword%
-      OR e.grade LIKE %:keyword%
-      OR e.employeeNumber LIKE %:keyword%
-      OR q.qualificationName LIKE %:keyword%
+        (:keyword IS NULL
+        OR e.name LIKE CONCAT('%', :keyword, '%')
+        OR e.employeeNumber LIKE CONCAT('%', :keyword, '%')
+        )
+        AND (:department IS NULL
+      OR e.department LIKE CONCAT('%', :department, '%')
+        )
+        AND (:grade IS NULL
+      OR e.grade LIKE CONCAT('%', :grade, '%')
+      )
+      AND (:qualificationName IS NULL
+        OR q.qualificationName LIKE CONCAT('%', :qualificationName, '%')
+        )
       """)
-  List<Employee> searchByKeyword(@Param("keyword")String keyword);
+
+  //AND (:department IS NULL OR e.department = :department)
+  //      OR e.department LIKE CONCAT('%', :department, '%')
+  //OR e.department = :department
+  //OR e.grade LIKE CONCAT('%', :grade, '%')
+  //AND (:grade IS NULL OR e.grade = :grade)
+  //OR e.grade = :grade
+
+  List<Employee> searchByCondition(
+      @Param("keyword") String keyword,
+      @Param("department") String department,
+      @Param("grade") String grade,
+      @Param("qualificationName") String qualificationName
+  );
+
 
   Optional<Employee> findByEmployeeNumber(String employeeNumber);
 }
