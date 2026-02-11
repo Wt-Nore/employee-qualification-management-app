@@ -1,9 +1,4 @@
 package com.example.demo.entity;
-/**　Javadoc(説明書)に書くべきこと
- * このクラスは何を表すか（主語を用いる）
- * 何を責務・役割として持つか
- * 何をしないか
- */
 
 import jakarta.persistence.Column;
 import jakarta.persistence.FetchType;
@@ -17,36 +12,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 
-
-
-/** Employee　クラスは、一人の社員を表すエンティティクラスです。
+/**
+ * 一人の社員を表すエンティティクラス。
  *
- * このクラスは、社員番号や氏名など、
- * 社員を一意に識別するための情報を保持します。
- *
- * 社員の所属部署や等級などの情報は、
- * 後から設定・変更されることを想定しています。
+ * <p>
+ *   社員番号・氏名・所属部署・等級を保持する。
+ *   Qualification とは多対多の関連を持つ。
+ * </p>
  */
-
-// ----- 学習メモ -----
-// ・フィールドとは、そのクラスが持っている情報のこと
-// ・Employeeフィールドは、外部から変更させないため、すべて private にする
-// ・ID は　DB 側で自動採番する想定のため Long にする
-// ・資格情報はこのクラスには持たせない
-// ・TODO: 所属部署や等級は、後から設定・変更されることを想定しているため setter を用意する
-//
-// ・コンストラクタとは、「正しい状態」で生まれさせるための仕組み「この条件を満たさないと、このクラスは作れません」というルールのこと
-// ・社員番号と氏名を指定して Employee を生成します
-// ・public は「他のクラスから利用してよい」ことを表す
-// ・Employee は、Controller や Service から生成されるため public にする
-//
-// ・getter は 他のクラスなどが「値を見る・取得」することを表す
-// ・getterの名前は get + フィールド名(先頭大文字)の形で書く 例：getName()
-// ・setter は 他のクラスなどが「値の設定・変更」することを表す 「読み取り専用の窓口」
-// ・
-// ・
-// ・
-
 @Entity //JPAがこのクラスをDBテーブルとして扱う
 public class Employee {
 
@@ -63,7 +36,7 @@ public class Employee {
   protected Employee() {}
   // protected = JPA用
 
-  @ManyToMany(fetch = FetchType.EAGER) // Employee と Qualification をつなぐテーブル
+  @ManyToMany(fetch = FetchType.LAZY) // Employee と Qualification をつなぐテーブル
   @JoinTable(
       name = "employee_qualifications",
       joinColumns = @JoinColumn(name = "employee_id"),
@@ -71,16 +44,15 @@ public class Employee {
   )
   private List<Qualification> qualifications = new ArrayList<>();
 
-
-  /** コンストラクタ
+  /**
+   * 社員を生成する
    *
-   * 社員番号
-   * 氏名
-   * 所属部署
-   * 等級
-   *
+   * @param employeeNumber 社員番号
+   * @param name 社員の氏名
+   * @param department 所属部署
+   * @param grade 等級
+   * @param qualifications 保有資格一覧
    */
-
   public Employee(String employeeNumber,
       String name,
       String department,
@@ -92,16 +64,13 @@ public class Employee {
     this.name = name;
     this.department = department;
     this.grade = grade;
-    this.qualifications = qualifications;
+    this.qualifications = (qualifications != null)
+        ? qualifications : new ArrayList<>();
   }
 
   // getter
   public String getName() {
     return name;
-    //public 他のクラス(Controller / HTML から使わせるため)
-    //String 返す値の型 name が String だから String
-    //getName() getterなので「このEmployee の名前を取得するだけ」 という意味
-    //return name; Employee が持っている name を外に渡す
   }
 
   public String getEmployeeNumber() {
@@ -123,20 +92,9 @@ public class Employee {
   //setter
   public void setDepartment(String department) {
     this.department = department;
-    //public...他のクラス(Controller / HTML から使わせるため)
-    //void...値を返さない 「変更したら終わり」という意味
-    //setDepartment(String department) ...「所属部署を設定する」 という入口
-    //引数の department は「新しい所属部署」
-    //this.department Employee が持っているフィールドを
-    //= department 外から渡された新しい値
-    //Employee 自身の所属部署を新しい値に置き換える
   }
 
   public void setGrade(String grade) {
     this.grade = grade;
   }
-
-
-
-
 }

@@ -2,8 +2,8 @@ package com.example.demo.config;
 
 import com.example.demo.entity.Employee;
 import com.example.demo.entity.Qualification;
-import com.example.demo.Repository.EmployeeRepository;
-import com.example.demo.Repository.QualificationRepository;
+import com.example.demo.repository.EmployeeRepository;
+import com.example.demo.repository.QualificationRepository;
 import java.util.List;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;

@@ -1,5 +1,13 @@
 package com.example.demo.dto;
 
+/**
+ * 社員検索に使用する検索条件DTO。
+ *
+ * <p>
+ *   フリーワード解析後の、検索条件を保持する。
+ *   各フィールドが null の場合は、その条件は未指定とみなす。
+ * </p>
+ */
 public class EmployeeSearchCondition {
 
   private String keyword;
@@ -7,11 +15,20 @@ public class EmployeeSearchCondition {
   private String grade;
   private String qualificationName;
 
+  /**
+   * 検索条件がすべて未指定かどうかを判定する。
+   *
+   * @return すべて未指定の場合 true
+   */
   public boolean isEmpty() {
-    return keyword == null
-        && department == null
-        && grade == null
-        && qualificationName == null;
+    return isBlank(keyword)
+        && isBlank(department)
+        && isBlank(grade)
+        && isBlank(qualificationName);
+  }
+
+  private boolean isBlank(String value) {
+    return value == null || value.isBlank();
   }
 
   // --- getter / setter ---
@@ -45,6 +62,10 @@ public class EmployeeSearchCondition {
   }
 
   public void setQualificationName(String qualificationName) {
-    this.qualificationName = qualificationName;
+    this.qualificationName = normalize(qualificationName);
+  }
+
+  private String normalize(String value) {
+    return (value == null || value.isBlank()) ? null : value;
   }
 }
