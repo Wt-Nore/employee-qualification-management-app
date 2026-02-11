@@ -28,23 +28,40 @@ th:href 画面遷移
   <button type="submit">検索</button>
 </form>
 
-<p th:if="${employees.isEmpty()}">
-  該当する社員はいませんでした
+<!-- 資格を持っている社員 -->
+<h2>資格を持っている社員</h2>
+
+<p th:if="${hasQualification.isEmpty()}">
+  該当者はいません
 </p>
 
-<ul th:if="${!employees.isEmpty()}">
-  <li th:each="employee : ${employees}">
+<ul th:if="${!hasQualification.isEmpty()}">
+  <li th:each="employee : ${hasQualification}">
     <a th:href="@{/employees/{employeeNumber}(
-    employeeNumber=${employee.employeeNumber},
-    keyword=${keyword}
+      employeeNumber=${employee.employeeNumber},
+      keyword=${keyword}
     )}">
       <span th:text="${employee.employeeNumber}"></span>
-      <span th:text="${employee.department ?:'未設定'}"></span>
+      <span th:text="${employee.department ?: '未設定'}"></span>
       <span th:text="${employee.grade}"></span>
       <span th:text="${employee.name}"></span>
     </a>
   </li>
 </ul>
+
+<!-- 資格を持っていない社員（資格指定時のみ表示想定） -->
+<div th:if="${!hasNotQualification.isEmpty()}">
+  <h2>資格を持っていない社員</h2>
+
+  <ul>
+    <li th:each="employee : ${hasNotQualification}">
+      <span th:text="${employee.employeeNumber}"></span>
+      <span th:text="${employee.department ?: '未設定'}"></span>
+      <span th:text="${employee.grade}"></span>
+      <span th:text="${employee.name}"></span>
+    </li>
+  </ul>
+</div>
 
 </body>
 </html>

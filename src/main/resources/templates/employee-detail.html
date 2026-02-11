@@ -8,6 +8,8 @@
 
 <h1>社員詳細</h1>
 
+<div th:if="${employee != null}">
+
 <p>社員番号：<span th:text="${employee.employeeNumber}"></span></p>
 
 <p>所属部署：<span th:text="${employee.department ?:'未設定'}"></span></p>
@@ -39,6 +41,10 @@
     <span th:text="${q.qualificationName}"></span>
   </li>
 </ul>
+
+</div>
+
+<p th:if="${message}" th:text="${message}"></p>
 
 </body>
 </html>
