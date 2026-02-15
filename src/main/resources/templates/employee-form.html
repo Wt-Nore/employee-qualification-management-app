@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>社員追加登録</title>
+</head>
+<body>
+
+<h1>社員追加登録</h1>
+
+<form th:action="@{/employees}" th:object="${employee}" method="post">
+  社員番号: <input type="text" th:field="*{employeeNumber}" /><br>
+  名前: <input type="text" th:field="*{name}" /><br>
+  部署: <input type="text" th:field="*{department}" /><br>
+  等級: <input type="text" th:field="*{grade}" /><br>
+  <button type="submit">登録</button>
+</form>
+
+</body>
+</html>

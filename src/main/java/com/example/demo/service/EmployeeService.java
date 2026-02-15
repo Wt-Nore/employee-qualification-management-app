@@ -10,6 +10,14 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 
+/**
+ * 社員に関する業務処理を担当するサービスクラス。
+ *
+ * <p>
+ *   Controller から呼び出され、
+ *   社員情報の登録・更新・削除などの業務ロジックを管理する。
+ * </p>
+ */
 @Service
 public class EmployeeService {
 
@@ -99,7 +107,6 @@ public class EmployeeService {
    * @param condition 検索条件
    * @return 資格あり／なしに分類された検索結果
    */
-
   public EmployeeSearchResult search(EmployeeSearchCondition condition) {
 
     // ① 資格を除いた条件で基準となる社員一覧を検索）
@@ -137,5 +144,18 @@ public class EmployeeService {
 
   private boolean containsIgnoreNull(String value, String target) {
     return value != null && value.contains(target);
+  }
+
+  /**
+   * 社員を新規登録する。
+   *
+   * <p>
+   *   Controller から受け取った Employee をデータベースに登録する。
+   * </p>
+   *
+   * @param employee 登録対象の社員
+   */
+  public void createEmployee(Employee employee){
+    employeeRepository.save(employee);
   }
 }

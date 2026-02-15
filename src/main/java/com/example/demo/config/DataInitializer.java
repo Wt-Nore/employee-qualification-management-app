@@ -18,6 +18,12 @@ public class DataInitializer {
       QualificationRepository qualificationRepository) {
 
     return args -> {
+
+      // すでにデータがあった場合、<資格を投入><社員を投入>の処理は実行しない
+      if (employeeRepository.count() > 0){
+        return;
+      }
+
       // --- 資格を投入 ---
       Qualification q1 = new Qualification("Q001", "基本情報技術者");
       Qualification q2 = new Qualification("Q002", "応用情報技術者");

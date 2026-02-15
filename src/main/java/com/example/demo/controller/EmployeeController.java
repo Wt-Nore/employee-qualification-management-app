@@ -12,15 +12,21 @@ import com.example.demo.entity.Employee;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+
 /**
  * 社員に関する画面リクエストを処理するController。
  *
  * <p>
- * 役割
- * URL を受ける
- * Service を呼ぶ
- * Model に詰める
- * 画面名を返す
+ *   画面表示やフォーム送信を受け取り、
+ *   必要に応じて Service へ処理を委譲する。
+ *   役割
+ *   URL を受ける
+ *   Service を呼ぶ
+ *   Model に詰める
+ *   画面名を返す
  * </p>
  */
 @Controller
@@ -97,5 +103,39 @@ public class EmployeeController {
       return "employee-detail";
       // } else {
       //   return "employee-not-found";
+  }
+
+  /**
+   * 社員追加画面（管理者機能）を表示する。
+   *
+   * <p>
+   *   空の Employee オブジェクトを生成し、フォームへバインドする。
+   * </p>
+   *
+   * @param model 画面へ値を渡すためのModel
+   * @return 社員追加登録画面 html を返す(employee-form)
+   */
+  @PreAuthorize("hasRole('ADMIN')")
+  @GetMapping("/employees/new")
+  public String showCreateForm(Model model) {
+    model.addAttribute("employee", new Employee());
+    return "employee-form";
+  }
+
+  /**
+   * 社員情報を新規登録する（管理者専用機能）。
+   *
+   * <p>
+   *   フォームから送信された Employee を保存し、登録後は社員一覧画面へリダイレクトする。
+   * </p>
+   *
+   * @param employee フォームへの入力値がバインドされた Employee
+   * @return 社員一覧画面へのリダイレクト
+   */
+  @PreAuthorize("hasRole('ADMIN')")
+  @PostMapping("/employees")
+  public String createEmployee(@ModelAttribute Employee employee) {
+    employeeService.createEmployee(employee);
+    return "redirect:/employees";
   }
 }
