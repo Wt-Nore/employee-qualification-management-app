@@ -38,11 +38,14 @@ public class Employee {
   /** 社員氏名 初期設定 【必須・変更不可】 */
   private String name;
 
-  /**  所属部署 変更される 【後から変更される】 */
+  /** 所属部署 変更される 【後から変更される】 */
   private String department;
 
-  /**  等級 変更される 【後から変更される】 */
+  /** 等級 変更される 【後から変更される】 */
   private String grade;
+
+  /** 論理削除フラグ(trueの場合は削除済み) */
+  private boolean deleted = false;
 
   /**
    * 保有資格　多対多
@@ -106,6 +109,10 @@ public class Employee {
 
   public List<Qualification> getQualifications() {
     return qualifications;
+  }
+
+  public boolean isDeleted() {
+    return deleted;
   }
 
   //setter

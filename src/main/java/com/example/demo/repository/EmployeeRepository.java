@@ -19,6 +19,9 @@ public interface EmployeeRepository
    * <p>
    * 各条件が null の場合は、その条件を無視する
    * </p>
+   * <p>
+   * 論理削除済み (deleted = true) の場合は、検索対象外とする
+   * </p>
    *
    * @param keyword 氏名または社員番号の部分一致
    * @param department 部署の部分一致
@@ -28,16 +31,19 @@ public interface EmployeeRepository
   @Query("""
       SELECT DISTINCT e
       FROM Employee e
-      WHERE
-        (:keyword IS NULL
+      WHERE e.deleted = false
+      AND (
+        :keyword IS NULL
         OR e.name LIKE CONCAT('%', :keyword, '%')
         OR e.employeeNumber LIKE CONCAT('%', :keyword, '%')
         )
-        AND (:department IS NULL
-      OR e.department LIKE CONCAT('%', :department, '%')
+        AND (
+        :department IS NULL
+        OR e.department LIKE CONCAT('%', :department, '%')
         )
-        AND (:grade IS NULL
-      OR e.grade LIKE CONCAT('%', :grade, '%')
+        AND (
+        :grade IS NULL
+        OR e.grade LIKE CONCAT('%', :grade, '%')
       )
       """)
 
@@ -54,6 +60,8 @@ public interface EmployeeRepository
    * @return 検索条件に一致する社員
    */
   Optional<Employee> findByEmployeeNumber(String employeeNumber);
+
+  List<Employee> findByDeletedFalse();
 
   /**
    * 社員番号をキーに、社員を1件取得する。
