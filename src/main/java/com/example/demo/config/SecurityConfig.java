@@ -25,6 +25,11 @@ public class SecurityConfig {
             .requestMatchers("/admin/**").hasRole("ADMIN")
             .anyRequest().authenticated()
         )
+        .csrf(csrf -> csrf
+            .ignoringRequestMatchers("/h2-console/**")
+        )
+        .headers(headers -> headers.frameOptions(frame -> frame.disable())
+        )
         .formLogin(form -> form
             .defaultSuccessUrl("/employees", true)
             .permitAll()

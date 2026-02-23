@@ -9,6 +9,9 @@
 <h1>社員追加登録</h1>
 
 <form th:action="@{/employees}" th:object="${employee}" method="post">
+  <input type="hidden"
+         th:name="${_csrf.parameterName}"
+         th:value="${_csrf.token}" />
   社員番号: <input type="text" th:field="*{employeeNumber}" /><br>
   名前: <input type="text" th:field="*{name}" /><br>
   部署: <input type="text" th:field="*{department}" /><br>

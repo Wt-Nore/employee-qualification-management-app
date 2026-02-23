@@ -18,6 +18,30 @@
 <p>ログインユーザー: <span sec:authentication="name"></span></p>
 <p>権限: <span sec:authentication="authorities"></span></p>
 
+<!-- 編集モードへの切り替え機能 -->
+<div sec:authorize="hasRole('ADMIN')">
+  <!-- 通常モード→編集モード -->
+  <a th:if="${!editMode}"
+     th:href="@{/employees(mode='edit')}">
+    編集モードに入る
+  </a>
+
+  <!-- 編集モード→通常モード -->
+  <a th:if="${editMode}"
+     th:href="@{/employees}">
+    編集モードを終了
+  </a>
+
+</div>
+
+<!-- 社員追加機能 -->
+<div sec:authorize="hasRole('ADMIN')"
+     th:if="${editMode}">
+  <a th:href="@{/employees/new}">
+    新規登録
+  </a>
+</div>
+
 <!--
 th:each 一覧を回す
 th:text 表示する
@@ -59,7 +83,8 @@ li> 社員一覧画面（list.html）
     </a>
 
     <!-- 削除ボタン（資格を持っている社員用） -->
-    <div sec:authorize="hasRole('ADMIN')">
+    <div sec:authorize="hasRole('ADMIN')"
+    th:if="${editMode}">
     <form th:action="@{/employees/{employeeNumber}/delete(employeeNumber=${employee.employeeNumber})}"
           method="post"
           style="display:inline;">
@@ -84,7 +109,8 @@ li> 社員一覧画面（list.html）
       <span th:text="${employee.name}"></span>
 
       <!-- 削除ボタン（資格を持っていない社員用） -->
-      <div sec:authorize="hasRole('ADMIN')">
+      <div sec:authorize="hasRole('ADMIN')"
+           th:if="${editMode}">>
       <form th:action="@{/employees/{employeeNumber}/delete(employeeNumber=${employee.employeeNumber})}"
             method="post"
             style="display:inline;">

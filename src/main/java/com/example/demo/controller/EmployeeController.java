@@ -4,6 +4,8 @@ import com.example.demo.dto.EmployeeSearchCondition;
 import com.example.demo.dto.EmployeeSearchResult;
 import com.example.demo.service.EmployeeService;
 import java.util.Optional;
+//import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,21 +47,43 @@ public class EmployeeController {
    *   検索条件を「資格あり／なし」に分類して画面へ渡す。
    * </p>
    *
+   * <p>
+   *   ADMINのみ、編集モードに切り替え可能。
+   * </p>
+   *
+   * <ul>
+   * <li>keyword が指定された場合、検索条件を生成して社員を検索する。</li>
+   * <li>ADMINユーザーかつ mode=edit の場合、編集モードを有効化する。</li>
+   * </ul>
+   *
    * @param keyword 検索キーワード（社員名など、未指定または空の場合は全件表示）
+   * @param mode 編集モード指定用パラメータ（"edit" の場合に編集モード有効）
+   * @param authentication 認証情報（ロール判定に使用）
    * @param model 画面に社員一覧と検索条件を渡すための Model
    * @return 社員一覧画面 html を返す（employee-list）
    */
   @GetMapping("/employees")
-  public String search(
+  public String list(
       @RequestParam(required = false) String keyword,
+      @RequestParam(required = false) String mode,
+      Authentication authentication,
       Model model) {
 
-    EmployeeSearchCondition condition = employeeService.buildConditionFromKeyword(keyword);
+    // 編集モード判定
+    boolean isAdmin = authentication != null &&
+        authentication.getAuthorities().stream()
+          .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
-    EmployeeSearchResult result = employeeService.search(condition);
+    boolean editMode = isAdmin && "edit".equals(mode);
+    model.addAttribute("editMode", editMode);
 
+    // 検索処理
+    EmployeeSearchCondition condition =
+        employeeService.buildConditionFromKeyword(keyword);
 
-    //model.addAttribute("employees", employees);
+    EmployeeSearchResult result =
+        employeeService.search(condition);
+
     model.addAttribute("hasQualification", result.getHasQualification());
     model.addAttribute("hasNotQualification", result.getHasNotQualification());
     model.addAttribute("keyword", keyword);
@@ -139,8 +163,17 @@ public class EmployeeController {
     return "redirect:/employees";
   }
 
+  /**
+   * 社員情報を削除する（管理者専用機能）。
+   *
+   * <p>
+   *   削除対象社員の deleted フラグを true に設定する。
+   * </p>
+   * @param employeeNumber 削除対象の社員番号
+   * @return 社員一覧画面へのリダイレクト
+   */
   @PreAuthorize("hasRole('ADMIN')")
-  @PostMapping("/employees/")
+  @PostMapping("/employees/{employeeNumber}/delete")
   public String deleteEmployee(@PathVariable String employeeNumber) {
     employeeService.deletedEmployee(employeeNumber);
     return "redirect:/employees";
