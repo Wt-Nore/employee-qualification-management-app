@@ -138,4 +138,11 @@ public class EmployeeController {
     employeeService.createEmployee(employee);
     return "redirect:/employees";
   }
+
+  @PreAuthorize("hasRole('ADMIN')")
+  @PostMapping("/employees/")
+  public String deleteEmployee(@PathVariable String employeeNumber) {
+    employeeService.deletedEmployee(employeeNumber);
+    return "redirect:/employees";
+  }
 }

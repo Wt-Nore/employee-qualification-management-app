@@ -158,4 +158,24 @@ public class EmployeeService {
   public void createEmployee(Employee employee){
     employeeRepository.save(employee);
   }
+
+  /**
+   * 社員を論理削除する。
+   *
+   * <p>
+   *   deleted フラグを true に設定することで、
+   *   データは残したまま一覧・検索対象外とする。
+   * </p>
+   *
+   * @param employeeNumber 社員番号
+   */
+  public void deletedEmployee(String employeeNumber) {
+    Employee employee = employeeRepository
+        .findByEmployeeNumberAndDeletedFalse(employeeNumber)
+        .orElseThrow(() -> new IllegalArgumentException("社員が存在しません"));
+
+    employee.setDeleted(true);
+
+    employeeRepository.save(employee);
+  }
 }

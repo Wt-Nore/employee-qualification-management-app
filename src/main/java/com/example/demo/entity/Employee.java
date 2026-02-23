@@ -131,4 +131,8 @@ public class Employee {
   public void setDepartment(String department) {
     this.department = department;
   }
+
+  public void setDeleted(boolean deleted) {
+    this.deleted = deleted;
+  }
 }

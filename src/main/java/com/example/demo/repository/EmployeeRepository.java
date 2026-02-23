@@ -63,6 +63,8 @@ public interface EmployeeRepository
 
   List<Employee> findByDeletedFalse();
 
+  Optional<Employee> findByEmployeeNumberAndDeletedFalse(String employeeNumber);
+
   /**
    * 社員番号をキーに、社員を1件取得する。
    * <p>

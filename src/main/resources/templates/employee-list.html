@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="ja">
+
 <head>
   <meta charset="UTF-8">
   <title>社員一覧</title>
@@ -8,17 +11,25 @@
 
 <h1>社員一覧</h1>
 
+<form th:action="@{/logout}" method="post">
+  <button type="submit">ログアウト</button>
+</form>
+
+<p>ログインユーザー: <span sec:authentication="name"></span></p>
+<p>権限: <span sec:authentication="authorities"></span></p>
+
 <!--
 th:each 一覧を回す
 th:text 表示する
 th:href 画面遷移
 
 画面構成
-社員一覧画面（list.html）
+li> 社員一覧画面（list.html）
 ├─ 検索フォーム
 │
 └─ 社員一覧
-    └─ 詳細リンク → detail.html
+    ├─ a> 詳細リンク → detail.html
+    └─ form> 削除
 -->
 
 <form th:action="@{/employees}" method="get">
@@ -46,6 +57,18 @@ th:href 画面遷移
       <span th:text="${employee.grade}"></span>
       <span th:text="${employee.name}"></span>
     </a>
+
+    <!-- 削除ボタン（資格を持っている社員用） -->
+    <div sec:authorize="hasRole('ADMIN')">
+    <form th:action="@{/employees/{employeeNumber}/delete(employeeNumber=${employee.employeeNumber})}"
+          method="post"
+          style="display:inline;">
+      <button type="submit"
+              onclick="return confirm('本当に削除しますか？');">
+        削除あ
+      </button>
+    </form>
+    </div>
   </li>
 </ul>
 
@@ -59,6 +82,21 @@ th:href 画面遷移
       <span th:text="${employee.department ?: '未設定'}"></span>
       <span th:text="${employee.grade}"></span>
       <span th:text="${employee.name}"></span>
+
+      <!-- 削除ボタン（資格を持っていない社員用） -->
+      <div sec:authorize="hasRole('ADMIN')">
+      <form th:action="@{/employees/{employeeNumber}/delete(employeeNumber=${employee.employeeNumber})}"
+            method="post"
+            style="display:inline;">
+        <button type="submit"
+                onclick="return confirm('本当に削除しますか？');">
+          削除い
+        </button>
+      </form>
+      </div>
+
+
+
     </li>
   </ul>
 </div>
