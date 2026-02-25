@@ -1,4 +1,0 @@
-2026-02-24 02:24:15.098804+09:00 jdbc[13]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: SQLステートメントに文法エラーがあります "[*]ID ID"; 期待されるステートメント "INSERT"
-Syntax error in SQL statement "[*]ID ID"; expected "INSERT"; SQL statement:
-ID ID [42001-232]
