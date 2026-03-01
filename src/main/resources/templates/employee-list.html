@@ -82,6 +82,18 @@ li> 社員一覧画面（list.html）
       <span th:text="${employee.name}"></span>
     </a>
 
+    <!-- 編集ボタン（資格を持っている社員用）　バグ発生中 -->
+    <div sec:authorize="hasRole('ADMIN')"
+         th:if="${editMode}">
+
+      <a th:href="@{/employees/{id}/edit(id=${employee.id})}"
+         class="btn btn-edit">
+         編集
+      </a>
+    </div>
+
+
+
     <!-- 削除ボタン（資格を持っている社員用） -->
     <div sec:authorize="hasRole('ADMIN')"
     th:if="${editMode}">

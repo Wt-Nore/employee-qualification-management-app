@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
  * <p>
  *   Controller から呼び出され、
  *   社員情報の登録・更新・削除などの業務ロジックを管理する。
+ *
+ *   DTOからEntityへの変換処理および
+ *   データベース操作を行う。
  * </p>
  */
 @Service
@@ -153,9 +156,48 @@ public class EmployeeService {
    *   Controller から受け取った Employee をデータベースに登録する。
    * </p>
    *
-   * @param employee 登録対象の社員
+   * @param form 入力フォーム情報
    */
-  public void createEmployee(Employee employee){
+  public void createEmployee(Employee form){
+
+    Employee employee = new Employee();
+
+    employee.setEmployeeNumber(form.getEmployeeNumber());
+    employee.setName(form.getName());
+    employee.setDepartment(form.getDepartment());
+    employee.setGrade(form.getGrade());
+
+    employeeRepository.save(employee);
+  }
+
+  /**
+   * 指定されたIDの社員情報を取得する。
+   *
+   * @param id 社員ID
+   * @return 該当する社員エンティティ
+   * @throws IllegalArgumentException 指定IDの社員が存在しない場合
+   */
+  public Employee findById(Long id) {
+    return employeeRepository.findById(id)
+        .orElseThrow(() ->
+            new IllegalArgumentException("Employee not found: " + id));
+  }
+
+  /**
+   * 指定IDの社員情報を更新する。
+   *
+   * @param id 更新対象の社員ID
+   * @param form 入力フォーム情報
+   */
+  public void updateEmployee(Long id, Employee form) {
+
+    Employee employee = employeeRepository.findById(id)
+        .orElseThrow(() -> new IllegalArgumentException("社員が見つかりません"));
+
+    employee.setName(form.getName());
+    employee.setDepartment(form.getDepartment());
+    employee.setGrade(form.getGrade());
+
     employeeRepository.save(employee);
   }
 

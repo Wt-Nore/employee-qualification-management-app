@@ -6,17 +6,36 @@
 </head>
 <body>
 
-<h1>社員追加登録</h1>
+<h1>
+  <span th:if="${formMode == 'edit'}">社員情報編集</span>
+  <span th:unless="${formMode == 'edit'}">社員新規登録</span>
+</h1>
 
-<form th:action="@{/employees}" th:object="${employee}" method="post">
+<form th:object="${employeeForm}"
+      th:action="${formMode == 'edit'}
+      ? @{/employees/{id}(id=*{id})}
+      : @{/employees}"
+      method="post">
+
   <input type="hidden"
          th:name="${_csrf.parameterName}"
-         th:value="${_csrf.token}" />
+         th:value="${_csrf.token}"
+         th:field="*{id}" />
+
   社員番号: <input type="text" th:field="*{employeeNumber}" /><br>
   名前: <input type="text" th:field="*{name}" /><br>
   部署: <input type="text" th:field="*{department}" /><br>
   等級: <input type="text" th:field="*{grade}" /><br>
-  <button type="submit">登録</button>
+
+  <button type="submit">
+    <span th:if="${formMode == 'edit'}">更新</span>
+    <span th:if="${formMode != 'edit'}">登録</span>
+  </button>
+
+  <a th:href="@{/employees}"
+     class="btn btn-cancel">
+    キャンセル
+  </a>
 </form>
 
 </body>

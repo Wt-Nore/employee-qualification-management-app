@@ -33,6 +33,9 @@ target/
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
+/data/
+*.mv.db
+*.trace.db
 
 ### VS Code ###
 .vscode/

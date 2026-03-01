@@ -91,6 +91,10 @@ public class Employee {
   }
 
   // getter
+  public Long getId() {
+    return id;
+  }
+
   public String getName() {
     return name;
   }
@@ -116,6 +120,10 @@ public class Employee {
   }
 
   //setter
+  public void setId(Long id) {
+    this.id = id;
+  }
+
   public void setName(String name) {
     this.name = name;
   }

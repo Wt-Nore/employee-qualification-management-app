@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.EmployeeForm;
 import com.example.demo.dto.EmployeeSearchCondition;
 import com.example.demo.dto.EmployeeSearchResult;
 import com.example.demo.service.EmployeeService;
@@ -20,10 +21,15 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 /**
  * 社員に関する画面リクエストを処理するController。
+ * 社員情報の登録・編集・一覧表示を扱うクラス。
  *
  * <p>
  *   画面表示やフォーム送信を受け取り、
  *   必要に応じて Service へ処理を委譲する。
+ *
+ *   新規登録及び編集機能は、共通フォームを使用し、
+ *   formMode によって表示を切り替える。
+ *
  *   役割
  *   URL を受ける
  *   Service を呼ぶ
@@ -38,6 +44,8 @@ public class EmployeeController {
   public EmployeeController (EmployeeService employeeService) {
     this.employeeService = employeeService;
   }
+
+  //１社員一覧画面、２社員詳細画面、３社員新規登録画面、４新規登録処理、５社員情報編集画面、６社員情報更新処理、７社員情報削除処理
 
   /**
    * 社員一覧画面を表示する。
@@ -130,7 +138,7 @@ public class EmployeeController {
   }
 
   /**
-   * 社員追加画面（管理者機能）を表示する。
+   * 社員追加画面を表示する（管理者専用機能）。
    *
    * <p>
    *   空の Employee オブジェクトを生成し、フォームへバインドする。
@@ -142,7 +150,8 @@ public class EmployeeController {
   @PreAuthorize("hasRole('ADMIN')")
   @GetMapping("/employees/new")
   public String showCreateForm(Model model) {
-    model.addAttribute("employee", new Employee());
+    model.addAttribute("employeeForm", new Employee());
+    model.addAttribute("formMode", "create");
     return "employee-form";
   }
 
@@ -158,8 +167,53 @@ public class EmployeeController {
    */
   @PreAuthorize("hasRole('ADMIN')")
   @PostMapping("/employees")
-  public String createEmployee(@ModelAttribute Employee employee) {
-    employeeService.createEmployee(employee);
+  public String createEmployee(@ModelAttribute Employee form) {
+    employeeService.createEmployee(form);
+    return "redirect:/employees";
+  }
+
+  /**
+   * 社員情報編集画面を表示する（管理者専用機能）。
+   * <p>
+   *   指定された社員IDの情報を取得し、
+   *   編集フォームへ渡して表示する。
+   * </p>
+   * @param id 編集対象の社員ID
+   * @param model 画面へ社員情報を渡す Model
+   * @return 社員編集フォーム画面(employee-form)
+   */
+  @PreAuthorize("hasRole('ADMIN')")
+  @GetMapping("/employees/{id}/edit")
+  public String editEmployee(@PathVariable Long id, Model model) {
+    Employee employee = employeeService.findById(id);
+
+    Employee form = new Employee();
+    form.setId(employee.getId());
+    form.setEmployeeNumber(employee.getEmployeeNumber());
+    form.setName(employee.getName());
+    form.setDepartment(employee.getDepartment());
+    form.setGrade(employee.getGrade());
+
+    model.addAttribute("employeeForm", form);
+    model.addAttribute("formMode", "edit");
+
+    return "employee-form";
+  }
+
+  /**
+   * 社員情報を更新処理する（管理者専用機能）。
+   * @param id
+   * @param employee
+   * @return
+   */
+  @PreAuthorize("hasRole('ADMIN')")
+  @PostMapping("/employees/{id}")
+  public String updateEmployee(
+      @PathVariable Long id,
+      @ModelAttribute Employee form) {
+
+    employeeService.updateEmployee(id, form);
+
     return "redirect:/employees";
   }
 
